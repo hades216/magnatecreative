@@ -12,7 +12,13 @@ import { caseStudies } from '../data/caseStudies';
 const testimonials = [
   { text: "The architectural precision Magnate brought to our digital flagship redefined our market presence. They don't just build websites; they craft digital monuments.", initials: "MK", name: "Marcus Kael", title: "CEO, Obsidian Lab" },
   { text: "Our rebranding was atmospheric, mysterious, and ultimately transformative. Magnate’s vision for our identity felt less like a project and more like a rebirth.", initials: "ER", name: "Elias Thorne", title: "Director, Neon Media" },
-  { text: "Their digital marketing strategy is pure engineering supremacy. Organic growth scaled beyond our projections, grounded in data-driven dominance.", initials: "XN", name: "Xenon Nash", title: "Growth Lead, Cipher Systems" }
+  { text: "Their digital marketing strategy is pure engineering supremacy. Organic growth scaled beyond our projections, grounded in data-driven dominance.", initials: "XN", name: "Xenon Nash", title: "Growth Lead, Cipher Systems" },
+  { text: "The absolute synthesis of bleeding-edge technical capabilities with an elite cinematic finish. Our brand authority was cemented overnight.", initials: "LC", name: "Lucian Cross", title: "Founder, Aether Corp" },
+  { text: "They approached our digital platform the way a master architect plans a monolith. The structural beauty and raw performance are unparalleled.", initials: "FS", name: "Freya Sterling", title: "MD, Helix Ventures" },
+  { text: "Magnate created an atmospheric, obsidian-infused digital pipeline that captivates our clients. It's not design—it's high craftsmanship.", initials: "TV", name: "Thorne Vance", title: "Creative Lead, Spectral Arts" },
+  { text: "Their computational design approach solved our interaction depth issues. The interface performs with flawless fluid speed and absolute precision.", initials: "SR", name: "Sonya Reyes", title: "Head of AI, Apex Analytics" },
+  { text: "Unbelievable fidelity. Every micro-interaction is polished, and the dark-mode narrative structure is incredibly compelling to our high-net-worth investors.", initials: "AT", name: "Alistair Thorne", title: "Partner, Zenith Capital" },
+  { text: "From the layout animations to the custom shader pipelines, Magnate is the pinnacle of creative engineering. They didn't just meet our specs; they set a new industry benchmark.", initials: "JC", name: "Jaxen Cole", title: "Chief Architect, Chronos Systems" }
 ];
 
 const headingContainerVariants = {

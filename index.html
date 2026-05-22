@@ -4,6 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Magnate Creative | Engineering Pure Supremacy</title>
+    <!-- Defensive Shield against window.ethereum redefinition conflicts caused by multiple crypto wallet extensions -->
+    <script>
+      (function() {
+        try {
+          var _eth = window.ethereum;
+          Object.defineProperty(window, 'ethereum', {
+            get: function() { return _eth; },
+            set: function(val) { _eth = val; },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          console.debug('Protected window.ethereum from injection conflict.');
+        }
+
+        window.addEventListener('error', function(event) {
+          if (event && event.message && (
+            event.message.indexOf('ethereum') !== -1 || 
+            event.message.indexOf('Cannot redefine property') !== -1
+          )) {
+            event.stopImmediatePropagation();
+            console.warn('Intercepted and suppressed browser extension exception:', event.message);
+          }
+        }, true);
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content="Magnate Creative is a premium digital agency architecting high-end solutions in creative engineering, cloud systems, and strategic digital authority." />
     <meta name="keywords" content="digital agency, luxury tech, cloud architecture, creative engineering, digital authority, magnate creative" />
