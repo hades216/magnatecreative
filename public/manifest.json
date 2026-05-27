@@ -1,0 +1,22 @@
+{
+  "short_name": "Magnate",
+  "name": "Magnate Creative",
+  "description": "Premium Digital Agency architecting high-end creative engineering, cloud systems, and strategic digital authority.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#080808",
+  "theme_color": "#ff4d00",
+  "display": "standalone",
+  "orientation": "portrait"
+}

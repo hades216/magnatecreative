@@ -1,0 +1,9 @@
+# Robots configuration for Magnate Creative Digital Agency
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemaps list
+Sitemap: https://magnate-creative.com/sitemap.xml

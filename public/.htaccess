@@ -1,0 +1,88 @@
+# ------------------------------------------------------------------------------
+# MAGNATE CREATIVE | Apache Server Configuration for Elite Hosting on IONOS
+# This file handles client-side routing, compression, caching, and security.
+# ------------------------------------------------------------------------------
+
+# 1. CLIENT-SIDE ROUTING FALLBACK (SPA Support)
+# Ensures refreshing or entering nested routes directly serves the index.html template.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # If the requested filename is not an existing file
+  RewriteCond %{REQUEST_FILENAME} !-f
+  # And is not an existing directory
+  RewriteCond %{REQUEST_FILENAME} !-d
+  # And is not an existing symbolic link
+  RewriteCond %{REQUEST_FILENAME} !-l
+  # Rewrite all other URIs directly to the core index.html router
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# 2. ENHANCED PERFORMANCE (Gzip Compression)
+# Dramatically reduces file size of assets on the fly to elevate PageSpeed rankings on IONOS.
+<IfModule mod_deflate.c>
+  # Compress HTML, CSS, JavaScript, Text, XML and fonts
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font
+  AddOutputFilterByType DEFLATE application/x-font-opentype
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-truetype
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+
+  # Remove browser-specific bugs
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+# 3. LEVERAGE BROWSER CACHING (Expires Headers)
+# Speeds up subsequent visits on IONOS servers by telling browsers to keep assets locally.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+
+  # Static Assets (Compiled CSS/JS & Webpacks)
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+
+  # Vector Icons & UI Graphics
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
+
+  # Dynamic Configurations (Low TTL to avoid stale clients)
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# 4. ROBUST SECURITY HEADERS
+# Mitigates clickjacking, cross-site scripting (XSS), and MIME sniffing.
+<IfModule mod_headers.c>
+  Header set X-Frame-Options "DENY"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  # Clean Cache-Control overrides for standard static files
+  <FilesMatch "\.(js|css|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|json)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>

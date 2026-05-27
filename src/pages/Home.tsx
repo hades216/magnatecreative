@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Banner } from '../components/Banner';
@@ -19,6 +19,33 @@ const testimonials = [
   { text: "Their computational design approach solved our interaction depth issues. The interface performs with flawless fluid speed and absolute precision.", initials: "SR", name: "Sonya Reyes", title: "Head of AI, Apex Analytics" },
   { text: "Unbelievable fidelity. Every micro-interaction is polished, and the dark-mode narrative structure is incredibly compelling to our high-net-worth investors.", initials: "AT", name: "Alistair Thorne", title: "Partner, Zenith Capital" },
   { text: "From the layout animations to the custom shader pipelines, Magnate is the pinnacle of creative engineering. They didn't just meet our specs; they set a new industry benchmark.", initials: "JC", name: "Jaxen Cole", title: "Chief Architect, Chronos Systems" }
+];
+
+const faqs = [
+  {
+    question: "Which digital services do you specialize in?",
+    answer: "At Magnate Creative, we orchestrate high-performance digital ecosystems, ranging from high-end front-end applications with complex real-time shader networks and interactive 3D motion systems to scalable, robust cloud infrastructures and data-driven marketing authority pipelines."
+  },
+  {
+    question: "How does your design and development process operate?",
+    answer: "Our pipeline combines structural narrative design with strict custom-tailored creative engineering. We operate under an architectural methodology, creating detailed prototypes, highly optimized web layouts, and continuous server configurations before finalizing any build in the production ecosystem."
+  },
+  {
+    question: "What technologies constitute your core technical setup?",
+    answer: "We deploy robust modern setups comprising React 18+, Vite, Tailwind CSS, customized TypeScript, and low-latency Node.js API services, alongside cloud container deployment engines (such as Docker, Cloud Run) and edge networks to guarantee absolute performance and peak reliability."
+  },
+  {
+    question: "Can you optimize or scale our existing infrastructure?",
+    answer: "Yes. We specialize in computational audits and refactoring processes. Our engineering team can analyze your database configurations, asset pipelines, and interface responsiveness to scale systems beyond initial projections and establish true organic growth."
+  },
+  {
+    question: "Does Magnate Creative engage in long-term partnerships?",
+    answer: "Absolutely. We treat project deliverables as starting points for sustained authority. We offer structural support tiers, operational maintenance nodes, and analytical optimization rounds to continuously advance your platform as technology trends shift."
+  },
+  {
+    question: "How do we initiate a project with your engineering team?",
+    answer: "Engagement begins with a system assessment protocol. By clicking 'Connect Now,' you can input your enterprise parameters and start a dedicated architectural brief with our Creative Director and Senior Engineers to define your digital supremacy pipeline."
+  }
 ];
 
 const headingContainerVariants = {
@@ -50,8 +77,39 @@ const headingLineVariants = {
   }
 };
 
+const cardContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    }
+  }
+};
+
+const cardItemVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 45,
+    scale: 0.97,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      damping: 22,
+      stiffness: 75,
+      duration: 0.85
+    }
+  }
+};
+
 export const Home = ({ setIsContactModalOpen }: { setIsContactModalOpen: (open: boolean) => void }) => {
   const [testimonialIdx, setTestimonialIdx] = useState(0);
+  const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
 
   return (
     <div className="w-full overflow-x-hidden">
@@ -403,14 +461,17 @@ export const Home = ({ setIsContactModalOpen }: { setIsContactModalOpen: (open: 
             </a>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <motion.div 
+            variants={cardContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-12"
+          >
             {caseStudies.slice(0, 3).map((study, idx) => (
               <motion.div
                 key={study.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
+                variants={cardItemVariants}
                 className="group relative flex flex-col h-full dark:bg-[#0a0a0a] bg-neutral-100 dark:border-white/5 border-black/10 overflow-hidden shadow-2xl"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
@@ -436,7 +497,7 @@ export const Home = ({ setIsContactModalOpen }: { setIsContactModalOpen: (open: 
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -523,6 +584,64 @@ export const Home = ({ setIsContactModalOpen }: { setIsContactModalOpen: (open: 
                 Submit Testimonial
               </button>
             </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Frequently Asked Questions */}
+      <section id="faq" className="py-32 border-t border-outline-variant bg-transparent relative overflow-hidden z-10">
+        <div className="max-w-[1250px] mx-auto px-10">
+          <div className="flex flex-col justify-center items-center text-center mb-24 border-b border-outline-variant pb-8">
+            <span className="font-label-sm tracking-[0.3em] text-secondary mb-4 inline-block uppercase text-[10px]">KNOWLEDGE PROTOCOL</span>
+            <h2 className="font-headline-lg text-4xl sm:text-5xl md:text-7xl text-on-background m-0 leading-[0.8] tracking-tighter italic uppercase text-center">
+              Frequently Asked <span className="text-stroke">Questions</span>
+            </h2>
+          </div>
+
+          <div className="max-w-4xl mx-auto space-y-4">
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaqIdx === idx;
+              return (
+                <div 
+                  key={idx}
+                  className="border border-outline-variant/30 bg-surface/10 hover:bg-surface/20 transition-all duration-300"
+                >
+                  <button
+                    onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
+                    className="w-full text-left py-6 px-8 flex justify-between items-center gap-6 group cursor-pointer border-none bg-transparent"
+                  >
+                    <span className="font-headline-lg text-sm sm:text-base md:text-lg text-on-background uppercase tracking-wider group-hover:text-primary-fixed transition-colors font-medium">
+                      {faq.question}
+                    </span>
+                    <div className="w-8 h-8 rounded-full border border-outline-variant/30 bg-background/50 flex items-center justify-center shrink-0 text-on-surface-variant group-hover:text-primary-fixed group-hover:border-primary-fixed/30 transition-all">
+                      <motion.div
+                        animate={{ rotate: isOpen ? 135 : 0 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                      >
+                        <Plus className="w-4 h-4" />
+                      </motion.div>
+                    </div>
+                  </button>
+
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: isOpen ? "auto" : 0,
+                      opacity: isOpen ? 1 : 0,
+                    }}
+                    transition={{
+                      height: { type: "spring", stiffness: 150, damping: 20 },
+                      opacity: { duration: 0.25 }
+                    }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-8 pb-8 pt-2 border-t border-outline-variant/10 text-on-surface-variant text-sm md:text-base font-light leading-relaxed">
+                      {faq.answer}
+                    </div>
+                  </motion.div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -16,6 +16,7 @@ import { ArchitecturePage } from './pages/ArchitecturePage';
 import { CaseStudyPage } from './pages/CaseStudyPage';
 import { serviceCategories } from './data/services';
 import { Link } from 'react-router-dom';
+import { SEOManager } from './components/SEOManager';
 
 // A component to handle scroll restoration
 const ScrollToTop = () => {
@@ -52,6 +53,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <SEOManager />
       <div className="bg-background text-on-background font-body-md overflow-x-hidden min-h-screen relative selection:bg-primary-fixed selection:text-black pb-24 md:pb-0">
         {/* Global Background Layers */}
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
