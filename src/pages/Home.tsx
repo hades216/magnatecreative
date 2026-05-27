@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Banner } from '../components/Banner';
 import { GooeyText } from '../components/GooeyText';
@@ -107,9 +107,80 @@ const cardItemVariants = {
   }
 };
 
+const Shimmer = () => (
+  <motion.div
+    className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-fixed/5 to-transparent -translate-x-full"
+    animate={{
+      x: ["-100%", "100%"]
+    }}
+    transition={{
+      repeat: Infinity,
+      duration: 1.8,
+      ease: "linear"
+    }}
+  />
+);
+
+const ServiceCategorySkeleton = () => (
+  <div className="relative overflow-hidden flex flex-col w-[85vw] max-w-[320px] md:max-w-none md:w-[420px] h-[480px] md:h-[580px] dark:bg-[#080808]/80 bg-neutral-200/50 border dark:border-white/5 border-black/5 p-6 md:p-10 flex-shrink-0 shadow-xl select-none">
+    <Shimmer />
+    <div className="flex items-start justify-between mb-4 md:mb-6">
+      <div className="w-16 h-16 md:w-18 md:h-18 dark:bg-white/[0.04] bg-black/[0.02] border dark:border-white/5 border-black/5 rounded-xs" />
+      <div className="flex flex-col items-end gap-2">
+        <div className="w-12 h-2.5 dark:bg-white/[0.04] bg-black/[0.02]" />
+        <div className="w-16 h-2 dark:bg-white/[0.04] bg-black/[0.02]" />
+      </div>
+    </div>
+    <div className="mb-4 md:mb-6 flex-grow">
+      <div className="h-8 w-3/4 dark:bg-white/[0.05] bg-black/[0.03] mb-4 animate-pulse rounded-xs" />
+      <div className="h-[1px] w-12 dark:bg-white/[0.05] bg-black/[0.03] mb-4" />
+      <div className="space-y-2">
+        <div className="h-3 w-full dark:bg-white/[0.03] bg-black/[0.02] rounded-xs" />
+        <div className="h-3 w-5/6 dark:bg-white/[0.03] bg-black/[0.02] rounded-xs" />
+        <div className="h-3 w-4/5 dark:bg-white/[0.03] bg-black/[0.02] rounded-xs" />
+      </div>
+    </div>
+    <div className="space-y-3 mb-6">
+      <div className="h-2 w-1/2 dark:bg-white/[0.03] bg-black/[0.02] rounded-xs animate-pulse" />
+      <div className="h-2 w-1/3 dark:bg-white/[0.03] bg-black/[0.02] rounded-xs animate-pulse" />
+      <div className="h-2 w-2/5 dark:bg-white/[0.03] bg-black/[0.02] rounded-xs animate-pulse" />
+    </div>
+    <div className="pt-4 md:pt-6 border-t dark:border-white/5 border-black/5 flex justify-between items-center">
+      <div className="h-3 w-24 dark:bg-white/[0.04] bg-black/[0.02] rounded-xs" />
+      <div className="w-2.5 h-2.5 dark:bg-white/[0.04] bg-black/[0.02] rounded-none rotate-45" />
+    </div>
+  </div>
+);
+
+const CaseStudySkeleton = () => (
+  <div className="relative flex flex-col h-[520px] dark:bg-[#0a0a0a]/60 bg-neutral-200/40 dark:border-white/5 border-black/10 overflow-hidden shadow-xl select-none">
+    <Shimmer />
+    <div className="relative aspect-[16/10] dark:bg-neutral-900/40 bg-neutral-300/40 overflow-hidden">
+      <div className="absolute top-6 left-6 w-16 h-2 dark:bg-white/[0.04] bg-black/[0.02] rounded-xs" />
+    </div>
+    <div className="p-10 flex flex-col flex-grow">
+      <div className="w-24 h-2 dark:bg-white/[0.05] bg-black/[0.03] mb-4 rounded-xs animate-pulse" />
+      <div className="h-6 w-5/6 dark:bg-white/[0.06] bg-black/[0.04] mb-3 rounded-xs animate-pulse" />
+      <div className="h-6 w-2/3 dark:bg-white/[0.06] bg-black/[0.04] mb-6 rounded-xs animate-pulse" />
+      <div className="mt-auto pt-8 border-t dark:border-white/5 border-black/10 flex justify-between">
+        <div className="h-3 w-28 dark:bg-white/[0.04] bg-black/[0.02] rounded-xs" />
+        <div className="w-3.5 h-3.5 dark:bg-white/[0.04] bg-black/[0.02] rounded-xs" />
+      </div>
+    </div>
+  </div>
+);
+
 export const Home = ({ setIsContactModalOpen }: { setIsContactModalOpen: (open: boolean) => void }) => {
   const [testimonialIdx, setTestimonialIdx] = useState(0);
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="w-full overflow-x-hidden">
@@ -286,83 +357,91 @@ export const Home = ({ setIsContactModalOpen }: { setIsContactModalOpen: (open: 
           
           {/* Continuous Slide Motion for Services */}
           <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden py-10 z-10">
-            <motion.div 
-               className="flex gap-8 whitespace-nowrap"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{ 
-                x: { duration: 50, repeat: Infinity, ease: "linear" }
-              }}
-              style={{ width: "fit-content", willChange: "transform" }}
-            >
-              {/* Duplicate categories for infinite effect */}
-              {[...serviceCategories, ...serviceCategories].map((category, idx) => {
-                return (
-                  <motion.div 
-                    key={`${category.id}-${idx}`}
-                    className="group relative overflow-hidden flex flex-col w-[85vw] max-w-[320px] md:max-w-none md:w-[420px] h-[480px] md:h-[580px] dark:bg-neutral-950/90 bg-neutral-100/90 border dark:border-white/[0.15] border-black/[0.12] hover:border-primary-fixed/80 dark:hover:bg-black/95 hover:bg-white transition-all duration-500 shadow-[0_4px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_0_60px_rgba(0,0,0,0.8)] backdrop-blur-xl p-6 md:p-10 flex-shrink-0"
-                  >
-                    {/* Simplified Background Pattern */}
-                    <div className="absolute inset-0 opacity-10 pointer-events-none dark:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-                    
-                    {/* Hover Accent Glow Line - Top only for speed */}
-                    <div className="absolute top-0 left-0 w-0 h-[1px] bg-primary-fixed group-hover:w-full transition-all duration-700 ease-out"></div>
-                    
-                    {/* Technical Background Elements - Simplified */}
-                    <div className="absolute -right-16 -bottom-16 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-1000 rotate-12 pointer-events-none overflow-hidden">
-                      <span className="material-symbols-outlined text-[300px]" style={{fontVariationSettings: "'FILL' 0"}}>{category.icon}</span>
-                    </div>
+            {loading ? (
+              <div className="flex gap-8 px-10 overflow-x-auto w-full justify-start md:justify-center scrollbar-none pb-4">
+                {[1, 2, 3, 4].map((n) => (
+                  <ServiceCategorySkeleton key={n} />
+                ))}
+              </div>
+            ) : (
+              <motion.div 
+                 className="flex gap-8 whitespace-nowrap"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{ 
+                  x: { duration: 50, repeat: Infinity, ease: "linear" }
+                }}
+                style={{ width: "fit-content", willChange: "transform" }}
+              >
+                {/* Duplicate categories for infinite effect */}
+                {[...serviceCategories, ...serviceCategories].map((category, idx) => {
+                  return (
+                    <motion.div 
+                      key={`${category.id}-${idx}`}
+                      className="group relative overflow-hidden flex flex-col w-[85vw] max-w-[320px] md:max-w-none md:w-[420px] h-[480px] md:h-[580px] dark:bg-neutral-950/90 bg-neutral-100/90 border dark:border-white/[0.15] border-black/[0.12] hover:border-primary-fixed/80 dark:hover:bg-black/95 hover:bg-white transition-all duration-500 shadow-[0_4px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_0_60px_rgba(0,0,0,0.8)] backdrop-blur-xl p-6 md:p-10 flex-shrink-0"
+                    >
+                      {/* Simplified Background Pattern */}
+                      <div className="absolute inset-0 opacity-10 pointer-events-none dark:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+                      
+                      {/* Hover Accent Glow Line - Top only for speed */}
+                      <div className="absolute top-0 left-0 w-0 h-[1px] bg-primary-fixed group-hover:w-full transition-all duration-700 ease-out"></div>
+                      
+                      {/* Technical Background Elements - Simplified */}
+                      <div className="absolute -right-16 -bottom-16 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-1000 rotate-12 pointer-events-none overflow-hidden">
+                        <span className="material-symbols-outlined text-[300px]" style={{fontVariationSettings: "'FILL' 0"}}>{category.icon}</span>
+                      </div>
 
-                    <div className="relative z-10 flex flex-col h-full whitespace-normal">
-                      <div className="flex items-start justify-between mb-4 md:mb-6">
-                        <div className="relative">
-                          <div className="relative w-16 h-16 md:w-18 md:h-18 dark:bg-white/[0.08] bg-black/[0.04] border dark:border-white/10 border-black/10 flex items-center justify-center rounded-xs group-hover:bg-primary-fixed/10 group-hover:border-primary-fixed/40 transition-all duration-500">
-                            <span className="material-symbols-outlined text-primary-fixed text-4xl md:text-5xl group-hover:scale-110 transition-transform duration-500" style={{fontVariationSettings: "'FILL' 0"}}>{category.icon || 'terminal'}</span>
+                      <div className="relative z-10 flex flex-col h-full whitespace-normal">
+                        <div className="flex items-start justify-between mb-4 md:mb-6">
+                          <div className="relative">
+                            <div className="relative w-16 h-16 md:w-18 md:h-18 dark:bg-white/[0.08] bg-black/[0.04] border dark:border-white/10 border-black/10 flex items-center justify-center rounded-xs group-hover:bg-primary-fixed/10 group-hover:border-primary-fixed/40 transition-all duration-500">
+                              <span className="material-symbols-outlined text-primary-fixed text-4xl md:text-5xl group-hover:scale-110 transition-transform duration-500" style={{fontVariationSettings: "'FILL' 0"}}>{category.icon || 'terminal'}</span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.6)]"></span>
+                              <span className="font-mono text-[9px] text-green-400/80 tracking-widest uppercase">Active</span>
+                            </div>
+                            <div className="font-mono text-[10px] text-primary-fixed/40 tracking-[0.4em] uppercase">SYSTEM_NODE</div>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.6)]"></span>
-                            <span className="font-mono text-[9px] text-green-400/80 tracking-widest uppercase">Active</span>
+
+                        <div className="mb-4 md:mb-6">
+                          <h4 className="font-headline-lg text-2xl sm:text-3xl md:text-4xl text-on-background mb-3 md:mb-4 tracking-tighter leading-tight italic uppercase group-hover:text-primary-fixed transition-colors duration-500 whitespace-normal">{category.title}</h4>
+                          <div className="h-[1px] w-12 bg-primary-fixed group-hover:w-full transition-all duration-700 mb-4 md:mb-6 opacity-50"></div>
+                          <p className="text-on-surface-variant text-xs sm:text-sm md:text-base mb-4 md:mb-6 font-light leading-relaxed line-clamp-3 opacity-90 whitespace-normal">{category.description}</p>
+                        </div>
+
+                        {/* Detail List - Simplified */}
+                        <div className="space-y-2 md:space-y-3 mb-6 md:mb-8 overflow-hidden">
+                          {category.subcategories.slice(0, 3).map((sub, sIdx) => (
+                             <div key={sIdx} className="flex items-center gap-4 group/item">
+                               <div className="w-1.5 h-1.5 bg-primary-fixed/30 group-hover/item:bg-primary-fixed transition-all duration-300"></div>
+                               <span className="text-[11px] tracking-[0.15em] text-on-background/60 group-hover/item:text-on-background transition-colors duration-300 uppercase font-medium">{sub.title}</span>
+                             </div>
+                          ))}
+                        </div>
+
+                        <div className="mt-auto flex items-center justify-between border-t dark:border-white/[0.08] border-black/[0.08] pt-4 md:pt-6">
+                          <Link to={`/service/${category.id}`} className="group/btn flex items-center gap-4 text-[11px] tracking-[0.4em] uppercase text-on-background/70 dark:group-hover:text-white group-hover:text-black transition-all font-bold">
+                            <span>Initialize</span>
+                            <span className="material-symbols-outlined text-base group-hover:translate-x-2 transition-transform text-primary-fixed">arrow_forward</span>
+                          </Link>
+                          
+                          <div className="flex items-center gap-3">
+                            <motion.div 
+                              animate={{ opacity: [0.3, 0.8, 0.3] }}
+                              transition={{ duration: 3, repeat: Infinity }}
+                              className="w-2.5 h-2.5 bg-primary-fixed rounded-none rotate-45"
+                            />
                           </div>
-                          <div className="font-mono text-[10px] text-primary-fixed/40 tracking-[0.4em] uppercase">SYSTEM_NODE</div>
                         </div>
                       </div>
-
-                      <div className="mb-4 md:mb-6">
-                        <h4 className="font-headline-lg text-2xl sm:text-3xl md:text-4xl text-on-background mb-3 md:mb-4 tracking-tighter leading-tight italic uppercase group-hover:text-primary-fixed transition-colors duration-500 whitespace-normal">{category.title}</h4>
-                        <div className="h-[1px] w-12 bg-primary-fixed group-hover:w-full transition-all duration-700 mb-4 md:mb-6 opacity-50"></div>
-                        <p className="text-on-surface-variant text-xs sm:text-sm md:text-base mb-4 md:mb-6 font-light leading-relaxed line-clamp-3 opacity-90 whitespace-normal">{category.description}</p>
-                      </div>
-
-                      {/* Detail List - Simplified */}
-                      <div className="space-y-2 md:space-y-3 mb-6 md:mb-8 overflow-hidden">
-                        {category.subcategories.slice(0, 3).map((sub, sIdx) => (
-                           <div key={sIdx} className="flex items-center gap-4 group/item">
-                             <div className="w-1.5 h-1.5 bg-primary-fixed/30 group-hover/item:bg-primary-fixed transition-all duration-300"></div>
-                             <span className="text-[11px] tracking-[0.15em] text-on-background/60 group-hover/item:text-on-background transition-colors duration-300 uppercase font-medium">{sub.title}</span>
-                           </div>
-                        ))}
-                      </div>
-
-                      <div className="mt-auto flex items-center justify-between border-t dark:border-white/[0.08] border-black/[0.08] pt-4 md:pt-6">
-                        <Link to={`/service/${category.id}`} className="group/btn flex items-center gap-4 text-[11px] tracking-[0.4em] uppercase text-on-background/70 dark:group-hover:text-white group-hover:text-black transition-all font-bold">
-                          <span>Initialize</span>
-                          <span className="material-symbols-outlined text-base group-hover:translate-x-2 transition-transform text-primary-fixed">arrow_forward</span>
-                        </Link>
-                        
-                        <div className="flex items-center gap-3">
-                          <motion.div 
-                            animate={{ opacity: [0.3, 0.8, 0.3] }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                            className="w-2.5 h-2.5 bg-primary-fixed rounded-none rotate-45"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            )}
             
             {/* Gradient Overlays for smooth entry/exit */}
             <div className="absolute top-0 left-0 w-40 h-full bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
@@ -468,35 +547,41 @@ export const Home = ({ setIsContactModalOpen }: { setIsContactModalOpen: (open: 
             viewport={{ once: true, margin: "-100px" }}
             className="grid grid-cols-1 md:grid-cols-3 gap-12"
           >
-            {caseStudies.slice(0, 3).map((study, idx) => (
-              <motion.div
-                key={study.id}
-                variants={cardItemVariants}
-                className="group relative flex flex-col h-full dark:bg-[#0a0a0a] bg-neutral-100 dark:border-white/5 border-black/10 overflow-hidden shadow-2xl"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <img 
-                    src={study.image} 
-                    alt={`Visual showcase of case study: ${study.title}`} 
-                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 transform-gpu group-hover:scale-105" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t dark:from-[#0a0a0a] from-neutral-100 via-transparent to-transparent"></div>
-                  <div className="absolute top-6 left-6 font-mono text-[9px] dark:text-white/40 text-black/45 tracking-[0.3em] uppercase group-hover:text-primary-fixed transition-colors">Case_00{idx + 1}</div>
-                </div>
-                
-                <div className="p-10 flex flex-col flex-grow">
-                  <div className="font-mono text-[9px] text-primary-fixed/60 tracking-[0.4em] uppercase mb-4">{study.client}</div>
-                  <h3 className="font-headline-lg text-2xl text-on-background mb-6 italic uppercase group-hover:text-primary-fixed transition-colors leading-tight">{study.title}</h3>
-                  
-                  <div className="mt-auto pt-8 border-t dark:border-white/[0.05] border-black/[0.08]">
-                    <Link to={`/case-study/${study.id}`} className="group/btn flex items-center justify-between text-[10px] tracking-[0.4em] uppercase text-on-background/70 dark:group-hover:text-white group-hover:text-black transition-all font-bold">
-                        Access Protocol
-                        <span className="material-symbols-outlined text-[14px] transform group-hover/btn:translate-x-2 transition-transform text-primary-fixed">login</span>
-                    </Link>
+            {loading ? (
+              [1, 2, 3].map((n) => (
+                <CaseStudySkeleton key={n} />
+              ))
+            ) : (
+              caseStudies.slice(0, 3).map((study, idx) => (
+                <motion.div
+                  key={study.id}
+                  variants={cardItemVariants}
+                  className="group relative flex flex-col h-[520px] dark:bg-[#0a0a0a] bg-neutral-100 dark:border-white/5 border-black/10 overflow-hidden shadow-2xl"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <img 
+                      src={study.image} 
+                      alt={`Visual showcase of case study: ${study.title}`} 
+                      className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 transform-gpu group-hover:scale-105" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t dark:from-[#0a0a0a] from-neutral-100 via-transparent to-transparent"></div>
+                    <div className="absolute top-6 left-6 font-mono text-[9px] dark:text-white/40 text-black/45 tracking-[0.3em] uppercase group-hover:text-primary-fixed transition-colors">Case_00{idx + 1}</div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                  
+                  <div className="p-10 flex flex-col flex-grow">
+                    <div className="font-mono text-[9px] text-primary-fixed/60 tracking-[0.4em] uppercase mb-4">{study.client}</div>
+                    <h3 className="font-headline-lg text-2xl text-on-background mb-6 italic uppercase group-hover:text-primary-fixed transition-colors leading-tight">{study.title}</h3>
+                    
+                    <div className="mt-auto pt-8 border-t dark:border-white/[0.05] border-black/[0.08]">
+                      <Link to={`/case-study/${study.id}`} className="group/btn flex items-center justify-between text-[10px] tracking-[0.4em] uppercase text-on-background/70 dark:group-hover:text-white group-hover:text-black transition-all font-bold">
+                          Access Protocol
+                          <span className="material-symbols-outlined text-[14px] transform group-hover/btn:translate-x-2 transition-transform text-primary-fixed">login</span>
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </motion.div>
         </div>
       </section>
