@@ -9,13 +9,28 @@
 // Define paths
 $indexHtmlPath = __DIR__ . '/index.html';
 
-// 1. Strict Security Headers
+// 1. Force HTTPS/SSL at the PHP level as a failsafe
+$isHttps = false;
+if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] == 1)) {
+    $isHttps = true;
+} elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $isHttps = true;
+}
+
+if (!$isHttps) {
+    header("HTTP/1.1 301 Moved Permanently");
+    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// 2. Strict Security Headers (Grade A compliance)
 header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 1; mode=block");
 header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: strict-origin-when-cross-origin");
+header("Strict-Transport-Security: max-age=63072000; includeSubDomains; preload");
 
-// 2. Deliver the React SPA payload
+// 3. Deliver the React SPA payload
 if (file_exists($indexHtmlPath)) {
     // Read and output the compiled HTML directly
     readfile($indexHtmlPath);
